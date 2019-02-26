@@ -43,6 +43,7 @@ def ElementAt(L, n):
 			temp = temp.next
 		return temp.item #return the item at n
 
+#dicide which algorithm to use
 def Median(L):
 	C = Copy(L) #get the copy of L
 	print("Using bubble Sort.\n\tThe median is: ", BubbleSort(C)) #get the median using Bubble Sort
@@ -53,26 +54,32 @@ def Median(L):
 
 #return the median after sorting the list in ascending order using modified quick sort
 def MQS(L, n):
+	global count
 	p = L.head.item #pivot
 	SmallL = List() #list for smaller numbers
 	LargeL = List() #list for larger numbers
 	temp = L.head.next
 	while temp is not None: #go through each node
 		if temp.item < p: #smaller than pivot
+			count+=1
 			Append(SmallL, temp.item)
 		else: #equal or greater than pivot
+			count+=1
 			Append(LargeL, temp.item)
 		temp = temp.next
 
 	if getLength(SmallL)<n: #median not in smallL
+		count+=1
 		return MQS(LargeL, n-getLength(SmallL)-1) #search on LargeL and get right the index for median
 	elif getLength(SmallL)>n: #median not in LargeL
+		count+=1
 		return MQS(SmallL, n) #search on SmallL and get the right index for median
 	else:
 		return p #median
 
 #return the sorted list
 def QuickSort(L):
+	global count
 	if getLength(L)<=1: #base case
 		return L
 	p = L.head.item #pivot
@@ -81,8 +88,10 @@ def QuickSort(L):
 	temp = L.head.next #get the next node
 	while temp is not None: #iterate every node
 		if temp.item < p: #smaller than pivot
+			count+=1
 			Append(SmallL, temp.item)
 		else: #greater or equal to pivot
+			count+=1
 			Append(LargeL, temp.item)
 		temp = temp.next
 
@@ -117,6 +126,7 @@ def getLength(L):
 
 #merge sort: sort the list in ascending order and return the list
 def MergeSort(L):
+	global count
 	len = getLength(L) #get the length of L
 	if len <= 1: #base case
 		return L
@@ -150,9 +160,11 @@ def MergeSort(L):
 			Append(TL, RL.head.item)
 			RL.head = RL.head.next
 		elif RL.head.item < LL.head.item: #when RL item is smaller than LL item
+			count+=1
 			Append(TL, RL.head.item)
 			RL.head = RL.head.next
 		else: #when LL item is smaller than RL item
+			count+=1
 			Append(TL, LL.head.item)
 			LL.head = LL.head.next
 	return TL #return the merged list
@@ -160,10 +172,12 @@ def MergeSort(L):
 #sort the list in ascending order using bubble sort and return the median
 def BubbleSort(L):
 	c=True
+	global count
 	while c: #checks if there was any swap in previus iteration
 		temp = L.head
 		while temp.next is not None: #traverse every nodes except the last one
 			if temp.item > temp.next.item: #true then swap
+				count = count+1
 				tnum = temp.item
 				temp.item = temp.next.item
 				temp.next.item = tnum
@@ -197,6 +211,7 @@ def createList(L, n):
 	for i in range(n):
 		Append(L, int(random()*101)) #append a number between 0 and 100 into L
 
+count = 0 #global variable in order to keep track of comparison
 n = int(input("Enter the length of the list.")) #input from the user
 L = List() #creating a list
 createList(L, n) #create a list of length n
@@ -205,4 +220,5 @@ Print(L) #print the original list
 start = int(time.time()*1000) #starting time
 Median(L) #get the median of the list (L)
 end = int(time.time()*1000) #ending time
+print(count, "comparison") #num of total comparison
 print(end-start , "seconds.") #resutl time
