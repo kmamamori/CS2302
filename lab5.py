@@ -30,12 +30,13 @@ class BST(object):
 def ht(f, f2):
 	print("\nBuilding hush table.\n")
 	print("Hash Table stats:")
-	H = HashTableC(29) #create Hash Table of length 17
+	H = HashTableC(23) #create Hash Table of length 17
 	print("Initail table size", len(H.item))
 	start = int(time.time()) #starting time
 	for line in f: #read line by line, glove
 		data = line.split(' ')
-		H = InsertC(H, data) #insert data
+		if data[0].isalpha():
+			H = InsertC(H, data) #insert data
 	end = int(time.time()) #ending time
 	print("Total elements: ", H.num_items)
 	print("Final table size: ", len(H.item))
@@ -45,24 +46,24 @@ def ht(f, f2):
 	print("Standard deviation of the lengths of the lists:", d)
 	print("Running time for Hash Table construction:", (end-start))
 	print("\nReading word file to determine similarities.\n")
-	start = int(time.time())
+	start2 = int(time.time()*1000)
 	for line2 in f2: #read line by line, word_pair
 		data2 = line2.split(',')
 		e0 = FindC(H, data2[0]) #return array if string found
 		e1 = FindC(H, data2[1]) #return array if string found
 		print("Similarity", data2[0:2], " = ", round(np.sum(e0*e1)/(math.sqrt(np.sum(e0*e0))*math.sqrt(np.sum(e1*e1))),4)) #compute the similarity
-	end = int(time.time()) #ending time
-	print("\nRunning time for hash table query processing: ", (end-start))
+	end2 = int(time.time()*1000) #ending time
+	print("\nRunning time for hash table query processing: ", (end2-start2))
 #HT: return # of empty list and standard deviation of lengths of lists
 def infolist(H):
-	c = 0
+	c=0
 	m = H.num_items/len(H.item)
 	k=0
 	for a in H.item:
-		k += len(a)-m
+		k += (len(a)-m)*(len(a)-m)
 		if a==[]: #[] found
 			c+=1
-	return c, (1/len(H.item))*k
+	return c, k*(1/len(H.item))
 #HT:double the size of hashtable
 def doubleSize(H):
 	H2 = HashTableC(2*len(H.item)+1) #size = 2*length+1
@@ -105,20 +106,21 @@ def bst(f, f2):
 	start = int(time.time()) #starting time
 	for line in f: #get line by line
 		data = line.split(' ') #array separated by ' '
-		T = Insert(T, [data[0], np.array(data[1:]).astype(np.float)]) #insert word+embeddings
+		if data[0].isalpha():
+			T = Insert(T, [data[0], np.array(data[1:]).astype(np.float)]) #insert word+embeddings
 	end = int(time.time()) #ending time
 	print("Binary Search Tree stats:")
 	print("Number of nodes: ", count_nodes(T)) #num of nodes
 	print("Height: ", find_height(T)) #num of height
 	print("Running time for binary search tree construction:", (end-start))
 	print("\nReading word file to determine similarities.\n")
-	start = int(time.time()) #starting time
+	start = int(time.time()*1000) #starting time
 	for line2 in f2: #word pairs
 		data2 = line2.split(',') #words pair separated by ','
 		e0 = search_word(T, data2[0]) #search the 1st word, return array
 		e1 = search_word(T, data2[1]) #search the 2nd word, return array
 		print("Similarity", data2[0:2], " = ", round(np.sum(e0*e1)/(math.sqrt(np.sum(e0*e0))*math.sqrt(np.sum(e1*e1))),4)) #compute the similarity
-	end = int(time.time()) #ending time
+	end = int(time.time()*1000) #ending time
 	print("\nRunning time for binary search tree query processing: ", (end-start))
 #BST: insert newitem into T
 def Insert(T, newItem):
@@ -140,7 +142,7 @@ def count_nodes(T):
 	if T is not None:
 		return 1 + count_nodes(T.left) + count_nodes(T.right)
 	return 0
-#BST: search a string in the tree T, return node with the same number if it was found, None if not found
+#BST: search a string in the tree T, return array if it was found, None otherwise
 def search_word(T, k):
 	temp = T #temporary variable for T
 	while temp is not None: #iterate through necessary nodes
@@ -153,15 +155,14 @@ def search_word(T, k):
 			temp = temp.right
 	return None #not found
 
-c = '1'
-while c=='1' or c=='2':
-	c = input("Type 1 for binary search tree or 2 for hush table with chaining\nChoice: ")
-	f = open('glove.6b/glove.6B.50d.txt', encoding='utf-8') #file with vectors
-	f2 = open('word_pair.txt', encoding='utf-8') #file with pairs
-	if c=='1': #binary search tree
-		bst(f, f2)
-	elif c=='2': #hash table
-		ht(f, f2)
-	f.close()
-	f2.close()
-	print()
+
+c = input("Type 1 for binary search tree or 2 for hush table with chaining\nChoice: ")
+f = open('glove.6b/glove.6B.50d.txt', encoding='utf-8') #file with vectors
+f2 = open('word_pair.txt', encoding='utf-8') #file with pairs
+if c=='1': #binary search tree
+	bst(f, f2)
+elif c=='2': #hash table
+	ht(f, f2)
+f.close()
+f2.close()
+print()
