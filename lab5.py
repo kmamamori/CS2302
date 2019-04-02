@@ -30,7 +30,7 @@ class BST(object):
 def ht(f, f2):
 	print("\nBuilding hush table.\n")
 	print("Hash Table stats:")
-	H = HashTableC(23) #create Hash Table of length 17
+	H = HashTableC(19) #create Hash Table of length 17
 	print("Initail table size", len(H.item))
 	start = int(time.time()) #starting time
 	for line in f: #read line by line, glove
@@ -44,6 +44,7 @@ def ht(f, f2):
 	c, d = infolist(H)
 	print("Percentage of empty lists:", c/len(H.item)*100)
 	print("Standard deviation of the lengths of the lists:", d)
+	print(H.item[int(d)+1])
 	print("Running time for Hash Table construction:", (end-start))
 	print("\nReading word file to determine similarities.\n")
 	start2 = int(time.time()*1000)
@@ -63,7 +64,7 @@ def infolist(H):
 		k += (len(a)-m)*(len(a)-m)
 		if a==[]: #[] found
 			c+=1
-	return c, k*(1/len(H.item))
+	return c, math.sqrt(k*(1/(len(H.item))))
 #HT:double the size of hashtable
 def doubleSize(H):
 	H2 = HashTableC(2*len(H.item)+1) #size = 2*length+1
@@ -86,8 +87,12 @@ def InsertC(H,k):
 #HT: return the index to insert
 def h(s,n):
 	r = 0
+	t=0
+	"""for p in s:
+		t += (n*math.sin(math.radians(3.599999*(ord(p)-97))))
+	return int(t//len(s))"""
 	for c in s:
-		r = (r*n + ord(c))% n
+		r = (r*60 + ord(c))% n
 	return r
 #HT: find k and return array if found
 def FindC(H,k):
