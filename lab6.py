@@ -10,6 +10,7 @@ import numpy as np
 import random
 from scipy import interpolate
 import time
+import sys
 
 #Find with path compression
 def find_c(S,i):
@@ -99,6 +100,8 @@ plt.close("all")
 maze_rows = 10
 maze_cols = 15
 
+c = input("Type 1 to use standard union, type 2 to use union with path compressions.\t")
+
 walls = wall_list(maze_rows,maze_cols) #create a maze separeated by walls
 draw_maze(walls,maze_rows,maze_cols,cell_nums=True)  #draw maze with number in each cell
 
@@ -106,8 +109,14 @@ start = time.time()*1000 #get the starting time
 S = DisjointSetForest(maze_rows*maze_cols) #create dsf to create maze
 while count_sets(S)>1: #while there are more than 1 set
 	d = random.randint(0, len(walls)-1) #get random index
-	if union(S, walls[d][0], walls[d][1]): #if two numbers were in different sets
-		walls.pop(d) #remove
+	if c=='1': #standard union
+		if union(S, walls[d][0], walls[d][1]): #if two numbers were in different sets
+			walls.pop(d) #remove
+	elif c=='2': #union with path compression
+		if union_c(S, walls[d][0], walls[d][1]): #if two numbers were in different sets
+			walls.pop(d) #remove
+	else: #exit program
+		sys.exit("You chose the wrong input number!")
 
 end = time.time()*1000 #get the ending time
 print("Time: ", round(end-start, 4), "milisecons.") #
