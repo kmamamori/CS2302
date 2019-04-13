@@ -1,6 +1,6 @@
 """""""""""""""""""""""""""""""""""""""
 Lab 6 - Disjoint Set Forest - Create a maze
-04/1/2019 - Ken M. Amamori
+04/13/2019 - Ken M. Amamori
 CS2302 MW 10:30 - 11:50
 Professor: Olac Fuentes
 TA: Anindita Nath, Maliheh Zargaran
